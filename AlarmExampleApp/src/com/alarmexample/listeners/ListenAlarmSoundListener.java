@@ -17,13 +17,13 @@ public class ListenAlarmSoundListener implements OnItemSelectedListener {
 		SharedPreferences preferences = view.getContext().getSharedPreferences(
 				AlarmExampleAppActivity.PREFS_NAME, 0);
 		boolean turnOn = mediaPlayer != null
-				&& preferences.getBoolean("dontStartSong", false);
-
+				&& (preferences.getBoolean("dontStartSong", false) == false);
 		if (turnOn) {
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putBoolean("dontStartSong", true);
 			mediaPlayer.start();
 		}
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putBoolean("dontStartSong", false);
+		editor.commit();
 	}
 
 	/**

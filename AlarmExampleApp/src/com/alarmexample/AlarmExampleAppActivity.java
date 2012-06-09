@@ -167,7 +167,6 @@ public class AlarmExampleAppActivity extends Activity {
 
 			PendingIntent sender = PendingIntent.getBroadcast(this,
 					REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-			System.out.println("asd");
 			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 			am.set(AlarmManager.RTC_WAKEUP, rightNow.getTimeInMillis(), sender);
 		}
@@ -186,7 +185,7 @@ public class AlarmExampleAppActivity extends Activity {
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME,
 				MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
-
 		editor.putBoolean("dontStartSong", true);
+		editor.commit();
 	}
 }
