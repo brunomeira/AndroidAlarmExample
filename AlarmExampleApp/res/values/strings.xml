@@ -2,11 +2,11 @@
 <resources>
 
     <string name="app_name">AlarmExampleApp</string>
-    <string name="alarm1">Alarm 1:</string>
-    <string name="alarm2">Alarm 2:</string>
-    <string name="alarm3">Alarm 3:</string>
-    <string name="alarm4">Alarm 4:</string>
-    <string name="alarm5">Alarm 5:</string>
+    <string name="alarm1">Wake 1:</string>
+    <string name="alarm2">Wake 2:</string>
+    <string name="alarm3">Wake 3:</string>
+    <string name="alarm4">Wake 4:</string>
+    <string name="alarm5">Wake 5:</string>
     <string name="setAlarm">On/Off</string>
     <string name="prompt">Select a sound</string>
     <string name="invalidFields">you have invalid fields, please fix it.</string>

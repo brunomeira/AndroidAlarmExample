@@ -1,9 +1,6 @@
 AndroidAlarmExample
 ===================
 
-
-ATTENTION I'M CURRENTLY DEVELOPING THIS PROJECT
-
 This is an android example which has 5 lines with 3 columns.
 The first column the user add a time that will activate the alarm
 the second column the user select the kind of music(when the user selects the sound the sound is showed up).

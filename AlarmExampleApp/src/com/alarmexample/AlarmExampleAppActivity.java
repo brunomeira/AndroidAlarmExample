@@ -288,11 +288,7 @@ public class AlarmExampleAppActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		SharedPreferences settings = getSharedPreferences(PREFS_NAME,
-				MODE_PRIVATE);
-		SharedPreferences.Editor editor = settings.edit();
-		editor.putBoolean("dontStartSong", true);
-		editor.commit();
+		saveApplicationState();
 	}
 
 	/**
