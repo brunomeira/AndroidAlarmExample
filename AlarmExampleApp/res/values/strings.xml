@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AlarmExampleApp</string>
+    <string name="alarm1">Alarm 1:</string>
+    <string name="alarm2">Alarm 2:</string>
+    <string name="alarm3">Alarm 3:</string>
+    <string name="alarm4">Alarm 4:</string>
+    <string name="alarm5">Alarm 5:</string>
+    <string name="setAlarm">On/Off</string>
+    <string name="prompt">Select a sound</string>
+
+    <string-array name="alarm_sounds">
+        <item>Sound</item>
+        <item>Normal</item>
+        <item>Talk</item>
+        <item>Jungle</item>
+    </string-array>
+
+</resources>
