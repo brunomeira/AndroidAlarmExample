@@ -1,7 +1,5 @@
 package com.alarmexample;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.app.Activity;
@@ -153,79 +151,68 @@ public class AlarmExampleAppActivity extends Activity {
 
 		if (checkBox.isChecked()) {
 			if (fieldsValidated(checkBox)) {
-
+				String time = null;
 				PendingIntent sender = null;
 				Intent intent = null;
 				Calendar actualTime = Calendar.getInstance();
 				Calendar timeToTriggerAlarm = Calendar.getInstance();
-				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-				timeToTriggerAlarm.set(actualTime.get(Calendar.YEAR),
-						actualTime.get(Calendar.MONTH),
-						actualTime.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+				switch (checkBox.getId()) {
+				case R.id.check1:
+					intent = intents[0] = new Intent(this, TimeReceiver.class);
+					int s = getSpinnerSelectedPositionByLine(1);
+					intents[0].putExtra("position",
+							getSpinnerSelectedPositionByLine(1));
+					time = getAlarmHourByLine(1);
+					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
+					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
+					break;
 
-				try {
-					switch (checkBox.getId()) {
-					case R.id.check1:
-						intent = intents[0] = new Intent(this,
-								TimeReceiver.class);
-						intents[0].putExtra("position",
-								getSpinnerSelectedPositionByLine(1));
-						timeToTriggerAlarm.setTime(sdf
-								.parse(getAlarmHourByLine(1)));
-						break;
+				case R.id.check2:
+					intent = intents[1] = new Intent(this, TimeReceiver.class);
+					intents[1].putExtra("position",
+							getSpinnerSelectedPositionByLine(2));
+					time = getAlarmHourByLine(2);
+					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
+					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
+					break;
+				case R.id.check3:
+					intent = intents[2] = new Intent(this, TimeReceiver.class);
+					intents[2].putExtra("position",
+							getSpinnerSelectedPositionByLine(3));
+					time = getAlarmHourByLine(3);
+					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
+					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
+					break;
+				case R.id.check4:
+					intent = intents[3] = new Intent(this, TimeReceiver.class);
+					intents[3].putExtra("position",
+							getSpinnerSelectedPositionByLine(4));
+					time = getAlarmHourByLine(4);
+					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
+					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
+					break;
+				case R.id.check5:
+					intent = intents[4] = new Intent(this, TimeReceiver.class);
+					intents[4].putExtra("position",
+							getSpinnerSelectedPositionByLine(5));
+					time = getAlarmHourByLine(5);
+					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
+					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
 
-					case R.id.check2:
-						intent = intents[1] = new Intent(this,
-								TimeReceiver.class);
-						intents[1].putExtra("position",
-								getSpinnerSelectedPositionByLine(2));
-						timeToTriggerAlarm.setTime(sdf
-								.parse(getAlarmHourByLine(2)));
-						break;
-					case R.id.check3:
-						intent = intents[2] = new Intent(this,
-								TimeReceiver.class);
-						intents[2].putExtra("position",
-								getSpinnerSelectedPositionByLine(3));
-						timeToTriggerAlarm.setTime(sdf
-								.parse(getAlarmHourByLine(3)));
-						break;
-					case R.id.check4:
-						intent = intents[3] = new Intent(this,
-								TimeReceiver.class);
-						intents[3].putExtra("position",
-								getSpinnerSelectedPositionByLine(4));
-						timeToTriggerAlarm.setTime(sdf
-								.parse(getAlarmHourByLine(4)));
-						break;
-					case R.id.check5:
-						intent = intents[4] = new Intent(this,
-								TimeReceiver.class);
-						intents[4].putExtra("position",
-								getSpinnerSelectedPositionByLine(5));
-
-						timeToTriggerAlarm.setTime(sdf
-								.parse(getAlarmHourByLine(5)));
-
-						break;
-					}
-
-					if (timeToTriggerAlarm.after(actualTime) == false) {
-						timeToTriggerAlarm
-								.set(Calendar.DAY_OF_MONTH, timeToTriggerAlarm
-										.get(Calendar.DAY_OF_MONTH) + 1);
-					}
-
-					sender = PendingIntent.getBroadcast(this, checkBox.getId(),
-							intent, PendingIntent.FLAG_ONE_SHOT);
-
-					AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-					am.set(AlarmManager.RTC_WAKEUP,
-							timeToTriggerAlarm.getTimeInMillis(), sender);
-				} catch (ParseException e) {
-					Toast.makeText(this, "Try Again Later", Toast.LENGTH_SHORT)
-							.show();
+					break;
 				}
+
+				timeToTriggerAlarm.set(Calendar.SECOND, 00);
+				if (actualTime.after(timeToTriggerAlarm)) {
+					timeToTriggerAlarm.add(Calendar.DAY_OF_MONTH, 1);
+				}
+				sender = PendingIntent.getBroadcast(this, checkBox.getId(),
+						intent, PendingIntent.FLAG_ONE_SHOT);
+
+				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+				am.set(AlarmManager.RTC_WAKEUP,
+						timeToTriggerAlarm.getTimeInMillis(), sender);
+
 			} else {
 				Toast.makeText(this, R.string.invalidFields, Toast.LENGTH_SHORT)
 						.show();
@@ -292,8 +279,8 @@ public class AlarmExampleAppActivity extends Activity {
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
+	protected void onStop() {
+		super.onStop();
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME,
 				MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
@@ -356,5 +343,13 @@ public class AlarmExampleAppActivity extends Activity {
 			break;
 		}
 		return alarmHour;
+	}
+
+	private int getHour(final String time) {
+		return Integer.parseInt(time.substring(0, 2));
+	}
+
+	private int getMinute(final String time) {
+		return Integer.parseInt(time.substring(3));
 	}
 }

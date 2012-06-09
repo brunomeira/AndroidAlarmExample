@@ -2,7 +2,6 @@ package com.alarmexample.listeners;
 
 import com.alarmexample.AlarmExampleAppActivity;
 
-import android.R.bool;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class ListenAlarmSoundListener implements OnItemSelectedListener {
+	private static int NUMBER_FIRED = 0;
 
 	public void onItemSelected(AdapterView<?> parent, View view, int pos,
 			long id) {
@@ -21,9 +21,13 @@ public class ListenAlarmSoundListener implements OnItemSelectedListener {
 		if (turnOn) {
 			mediaPlayer.start();
 		}
-		SharedPreferences.Editor editor = preferences.edit();
-		editor.putBoolean("dontStartSong", false);
-		editor.commit();
+		NUMBER_FIRED++;
+		if (NUMBER_FIRED == 5) {
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.putBoolean("dontStartSong", false);
+			editor.commit();
+			NUMBER_FIRED = 0;
+		}
 	}
 
 	/**
