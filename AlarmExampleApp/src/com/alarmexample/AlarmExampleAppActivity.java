@@ -247,6 +247,13 @@ public class AlarmExampleAppActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Verifies if alarm is in HH:mm format and if you had choosen a song
+	 * 
+	 * @param checkbox
+	 *            of the alarm hour line
+	 * @return true if fields are correct.
+	 */
 	private boolean fieldsValidated(final CheckBox checkbox) {
 		boolean validated = true;
 		switch (checkbox.getId()) {
@@ -288,6 +295,13 @@ public class AlarmExampleAppActivity extends Activity {
 		editor.commit();
 	}
 
+	/**
+	 * A helper method that get the selected position of a Spinner
+	 * 
+	 * @param line
+	 *            of the Spinner that you want to get the selected position
+	 * @return int of the selected position
+	 */
 	private int getSpinnerSelectedPositionByLine(final int line) {
 		int position = 0;
 		switch (line) {
@@ -316,6 +330,13 @@ public class AlarmExampleAppActivity extends Activity {
 		return position;
 	}
 
+	/**
+	 * A helper method that get the alarm hour of a EditText
+	 * 
+	 * @param line
+	 *            of the EditText that you want to get the text
+	 * @return String which contains the text
+	 */
 	private String getAlarmHourByLine(final int line) {
 		String alarmHour = "";
 
