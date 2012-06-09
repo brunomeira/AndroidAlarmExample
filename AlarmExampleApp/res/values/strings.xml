@@ -9,6 +9,7 @@
     <string name="alarm5">Alarm 5:</string>
     <string name="setAlarm">On/Off</string>
     <string name="prompt">Select a sound</string>
+    <string name="invalidFields">you have invalid fields, please fix it.</string>
 
     <string-array name="alarm_sounds">
         <item>Sound</item>

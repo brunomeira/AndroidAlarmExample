@@ -20,7 +20,7 @@
         </activity>
 
         <receiver
-            android:name="TimeReceiver"
+            android:name="com.alarmexample.receiver.TimeReceiver"
             android:process=":remote" >
         </receiver>
     </application>

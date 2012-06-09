@@ -15,7 +15,8 @@
             android:id="@+id/text1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="time" />
+            android:inputType="time"
+            android:maxLength="5" />
 
         <Spinner
             android:id="@+id/spinner1"
@@ -41,7 +42,8 @@
             android:id="@+id/text2"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="time" />
+            android:inputType="time"
+            android:maxLength="5" />
 
         <Spinner
             android:id="@+id/spinner2"
@@ -68,7 +70,8 @@
             android:id="@+id/text3"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="time" />
+            android:inputType="time"
+            android:maxLength="5" />
 
         <Spinner
             android:id="@+id/spinner3"
@@ -95,7 +98,8 @@
             android:id="@+id/text4"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="time" />
+            android:inputType="time"
+            android:maxLength="5" />
 
         <Spinner
             android:id="@+id/spinner4"
@@ -122,7 +126,8 @@
             android:id="@+id/text5"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="time" />
+            android:inputType="time"
+            android:maxLength="5" />
 
         <Spinner
             android:id="@+id/spinner5"

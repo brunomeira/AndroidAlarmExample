@@ -33,8 +33,10 @@ public class TimeReceiver extends BroadcastReceiver {
 			break;
 		}
 
+		mediaPlayer.start();
 		Toast.makeText(ctx, "It's time to WAKE UP!!!!", Toast.LENGTH_SHORT)
 				.show();
+
 	}
 
 }

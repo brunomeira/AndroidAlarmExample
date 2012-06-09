@@ -48,6 +48,7 @@ public final class R {
         public static final int alarm4=0x7f050004;
         public static final int alarm5=0x7f050005;
         public static final int app_name=0x7f050000;
+        public static final int invalidFields=0x7f050008;
         public static final int prompt=0x7f050007;
         public static final int setAlarm=0x7f050006;
     }
