@@ -7,11 +7,11 @@ the second column the user select the kind of music(when the user selects the so
 the third line makes the user activate or deactivate the alarm.
 The preferences are saved on a SharedPreferences object.
 
-![Initial Screen](https://github.com/brunomeira/AsyncFlickrSearch/raw/master/img/img1.jpg)
-![Different Alarms](https://github.com/brunomeira/AsyncFlickrSearch/raw/master/img/img2.jpg)
-![Validation](https://github.com/brunomeira/AsyncFlickrSearch/raw/master/img/img3.jpg)
-![Preparing Alarm](https://github.com/brunomeira/AsyncFlickrSearch/raw/master/img/img4.jpg)
-![Wake up](https://github.com/brunomeira/AsyncFlickrSearch/raw/master/img/img4.jpg)
+![Initial Screen](https://github.com/brunomeira/AndroidAlarmExample/raw/master/img/img1.jpg)
+![Different Alarms](https://github.com/brunomeira/AndroidAlarmExample/raw/master/img/img2.jpg)
+![Validation](https://github.com/brunomeira/AndroidAlarmExample/raw/master/img/img3.jpg)
+![Preparing Alarm](https://github.com/brunomeira/AndroidAlarmExample/raw/master/img/img4.jpg)
+![Wake up](https://github.com/brunomeira/AndroidAlarmExample/raw/master/img/img5.jpg)
 
 Also, Check my web site - www.developingsoftwares.com (It in development, but a lot of features were already implemented).
 

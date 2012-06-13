@@ -11,362 +11,163 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.alarmexample.listeners.ListenAlarmSoundListener;
 import com.alarmexample.receiver.TimeReceiver;
 
 public class AlarmExampleAppActivity extends Activity {
-	public static final String PREFS_NAME = "alarmPreferences";
-	private Intent[] intents = new Intent[5];
+	private int alarmNumber = 0;
 
-	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		mountSpinners();
+		setContentView(R.layout.config);
+		mountSpinner();
 		loadApplicationData();
 	}
 
-	/**
-	 * This method creates and populates all the Spinners in the screen. The
-	 * Spinners are used to set the kind of sound that the alarm will do.
-	 */
-	private void mountSpinners() {
-		Spinner[] spinners = { (Spinner) findViewById(R.id.spinner1),
-				(Spinner) findViewById(R.id.spinner2),
-				(Spinner) findViewById(R.id.spinner3),
-				(Spinner) findViewById(R.id.spinner4),
-				(Spinner) findViewById(R.id.spinner5) };
+	private void mountSpinner() {
+		Spinner spinner = getSpinner();
 
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
 				this, R.array.alarm_sounds,
 				android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-		for (Spinner spinner : spinners) {
-			spinner.setAdapter(adapter);
-			spinner.setOnItemSelectedListener(new ListenAlarmSoundListener());
+		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener(new ListenAlarmSoundListener());
+	}
+
+	private void loadApplicationData() {
+		TimePicker alarmTime = ((TimePicker) findViewById(R.id.timepicker));
+		SharedPreferences preferences = getLocalSharedPreferences();
+		alarmNumber = getIntent().getIntExtra("alarmNumber", 0);
+
+		int selectedSound = preferences.getInt("sound" + alarmNumber, 0);
+		String time = preferences.getString("timeAlarm" + alarmNumber, "00:00");
+		boolean isActivated = preferences.getBoolean("isActive" + alarmNumber,
+				false);
+
+		getCheckBox().setChecked(isActivated);
+		getSpinner().setSelection(selectedSound);
+		
+		int timeHour = Integer.parseInt(time.substring(0, time.indexOf(":")));
+		int timeMinutes = Integer
+				.parseInt(time.substring(time.indexOf(":") + 1));
+		alarmTime.setIs24HourView(true);
+		alarmTime.setCurrentHour(timeHour);
+		alarmTime.setCurrentMinute(timeMinutes);
+
+	}
+
+	public void save(final View view) {
+		if (fieldsValidated()) {
+			saveSharedPreferences();
+			enableOrDisableAlarm();
+			finish();
+		} else {
+			Toast.makeText(this, R.string.invalidFields, Toast.LENGTH_SHORT)
+					.show();
 		}
 	}
 
-	/**
-	 * It gets the preferences previously registered by the user and loads it on
-	 * the screen
-	 */
-	private void loadApplicationData() {
-		SharedPreferences preferences = getSharedPreferences(PREFS_NAME,
-				MODE_PRIVATE);
-		((EditText) findViewById(R.id.text1)).setText(preferences.getString(
-				"timeAlarm1", ""));
-		((Spinner) findViewById(R.id.spinner1)).setSelection(preferences
-				.getInt("sound1", 0));
-		((CheckBox) findViewById(R.id.check1)).setChecked(preferences
-				.getBoolean("isActive1", false));
-
-		((EditText) findViewById(R.id.text2)).setText(preferences.getString(
-				"timeAlarm2", ""));
-		((Spinner) findViewById(R.id.spinner2)).setSelection(preferences
-				.getInt("sound2", 0));
-		((CheckBox) findViewById(R.id.check2)).setChecked(preferences
-				.getBoolean("isActive2", false));
-
-		((EditText) findViewById(R.id.text3)).setText(preferences.getString(
-				"timeAlarm3", ""));
-		((Spinner) findViewById(R.id.spinner3)).setSelection(preferences
-				.getInt("sound3", 0));
-		((CheckBox) findViewById(R.id.check3)).setChecked(preferences
-				.getBoolean("isActive3", false));
-
-		((EditText) findViewById(R.id.text4)).setText(preferences.getString(
-				"timeAlarm4", ""));
-		((Spinner) findViewById(R.id.spinner4)).setSelection(preferences
-				.getInt("sound4", 0));
-		((CheckBox) findViewById(R.id.check4)).setChecked(preferences
-				.getBoolean("isActive4", false));
-
-		((EditText) findViewById(R.id.text5)).setText(preferences.getString(
-				"timeAlarm5", ""));
-		((Spinner) findViewById(R.id.spinner5)).setSelection(preferences
-				.getInt("sound5", 0));
-		((CheckBox) findViewById(R.id.check5)).setChecked(preferences
-				.getBoolean("isActive5", false));
-
+	private boolean fieldsValidated() {
+		return getSelectedSoundPosition() > 0;
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		saveApplicationState();
-	}
-
-	/**
-	 * It gets the preferences registered by the user on the screen and store it
-	 * in a SharedPreferences object.
-	 */
-	private void saveApplicationState() {
-		SharedPreferences settings = getSharedPreferences(PREFS_NAME,
-				MODE_PRIVATE);
-		SharedPreferences.Editor editor = settings.edit();
+	private void saveSharedPreferences() {
+		SharedPreferences.Editor editor = getLocalSharedPreferences().edit();
+		String time = getHour() + ":" + getMinute();
 
 		editor.putBoolean("dontStartSong", true);
-
-		editor.putString("timeAlarm1", getAlarmHourByLine(1));
-		editor.putInt("sound1", getSpinnerSelectedPositionByLine(1));
-		editor.putBoolean("isActive1",
-				((CheckBox) findViewById(R.id.check1)).isChecked());
-
-		editor.putString("timeAlarm2", getAlarmHourByLine(2));
-		editor.putInt("sound2", getSpinnerSelectedPositionByLine(2));
-		editor.putBoolean("isActive2",
-				((CheckBox) findViewById(R.id.check2)).isChecked());
-
-		editor.putString("timeAlarm3", getAlarmHourByLine(3));
-		editor.putInt("sound3", getSpinnerSelectedPositionByLine(3));
-		editor.putBoolean("isActive3",
-				((CheckBox) findViewById(R.id.check3)).isChecked());
-
-		editor.putString("timeAlarm4", getAlarmHourByLine(4));
-		editor.putInt("sound4", getSpinnerSelectedPositionByLine(4));
-		editor.putBoolean("isActive4",
-				((CheckBox) findViewById(R.id.check4)).isChecked());
-
-		editor.putString("timeAlarm5", getAlarmHourByLine(5));
-		editor.putInt("sound5", getSpinnerSelectedPositionByLine(5));
-		editor.putBoolean("isActive5",
-				((CheckBox) findViewById(R.id.check5)).isChecked());
+		editor.putBoolean("isActive" + alarmNumber, isActivated());
+		editor.putInt("sound" + alarmNumber, getSelectedSoundPosition());
+		editor.putString("timeAlarm" + alarmNumber, time);
 
 		editor.commit();
 	}
 
-	/**
-	 * Activate or Deactivate the alarm.
-	 * 
-	 * @param v
-	 */
-	public void activateAlarm(final View v) {
-		CheckBox checkBox = (CheckBox) v;
-
-		if (checkBox.isChecked()) {
-			if (fieldsValidated(checkBox)) {
-				String time = null;
-				PendingIntent sender = null;
-				Intent intent = null;
-				Calendar actualTime = Calendar.getInstance();
-				Calendar timeToTriggerAlarm = Calendar.getInstance();
-				switch (checkBox.getId()) {
-				case R.id.check1:
-					intent = intents[0] = new Intent(this, TimeReceiver.class);
-					int s = getSpinnerSelectedPositionByLine(1);
-					intents[0].putExtra("position",
-							getSpinnerSelectedPositionByLine(1));
-					time = getAlarmHourByLine(1);
-					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
-					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
-					break;
-
-				case R.id.check2:
-					intent = intents[1] = new Intent(this, TimeReceiver.class);
-					intents[1].putExtra("position",
-							getSpinnerSelectedPositionByLine(2));
-					time = getAlarmHourByLine(2);
-					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
-					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
-					break;
-				case R.id.check3:
-					intent = intents[2] = new Intent(this, TimeReceiver.class);
-					intents[2].putExtra("position",
-							getSpinnerSelectedPositionByLine(3));
-					time = getAlarmHourByLine(3);
-					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
-					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
-					break;
-				case R.id.check4:
-					intent = intents[3] = new Intent(this, TimeReceiver.class);
-					intents[3].putExtra("position",
-							getSpinnerSelectedPositionByLine(4));
-					time = getAlarmHourByLine(4);
-					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
-					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
-					break;
-				case R.id.check5:
-					intent = intents[4] = new Intent(this, TimeReceiver.class);
-					intents[4].putExtra("position",
-							getSpinnerSelectedPositionByLine(5));
-					time = getAlarmHourByLine(5);
-					timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour(time));
-					timeToTriggerAlarm.set(Calendar.MINUTE, getMinute(time));
-
-					break;
-				}
-
-				timeToTriggerAlarm.set(Calendar.SECOND, 00);
-				if (actualTime.after(timeToTriggerAlarm)) {
-					timeToTriggerAlarm.add(Calendar.DAY_OF_MONTH, 1);
-				}
-				sender = PendingIntent.getBroadcast(this, checkBox.getId(),
-						intent, PendingIntent.FLAG_ONE_SHOT);
-
-				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-				am.set(AlarmManager.RTC_WAKEUP,
-						timeToTriggerAlarm.getTimeInMillis(), sender);
-
-			} else {
-				Toast.makeText(this, R.string.invalidFields, Toast.LENGTH_SHORT)
-						.show();
-				checkBox.setChecked(false);
-			}
+	private void enableOrDisableAlarm() {
+		if (isActivated()) {
+			enableAlarm();
 		} else {
-			Intent intent = null;
-			switch (checkBox.getId()) {
-			case R.id.check1:
-				intent = intents[0];
-				break;
-
-			case R.id.check2:
-				intent = intents[1];
-				break;
-			case R.id.check3:
-				intent = intents[2];
-				break;
-			case R.id.check4:
-				intent = intents[3];
-				break;
-			case R.id.check5:
-				intent = intents[4];
-				break;
-			}
-			if (intent != null) {
-				PendingIntent sender = PendingIntent.getBroadcast(this,
-						checkBox.getId(), intent, PendingIntent.FLAG_ONE_SHOT);
-				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-				am.cancel(sender);
-			}
+			disableAlarm();
 		}
 	}
 
-	/**
-	 * Verifies if alarm is in HH:mm format and if you had choosen a song
-	 * 
-	 * @param checkbox
-	 *            of the alarm hour line
-	 * @return true if fields are correct.
-	 */
-	private boolean fieldsValidated(final CheckBox checkbox) {
-		boolean validated = true;
-		switch (checkbox.getId()) {
-		case R.id.check1:
-			validated = isTimeFormat(getAlarmHourByLine(1))
-					&& (getSpinnerSelectedPositionByLine(1) > 0);
-			break;
-		case R.id.check2:
-			validated = isTimeFormat(getAlarmHourByLine(2))
-					&& (getSpinnerSelectedPositionByLine(2) > 0);
-			break;
-		case R.id.check3:
-			validated = isTimeFormat(getAlarmHourByLine(3))
-					&& (getSpinnerSelectedPositionByLine(3) > 0);
-			break;
-		case R.id.check4:
-			validated = isTimeFormat(getAlarmHourByLine(4))
-					&& (getSpinnerSelectedPositionByLine(4) > 0);
-			break;
-		case R.id.check5:
-			validated = isTimeFormat(getAlarmHourByLine(5))
-					&& (getSpinnerSelectedPositionByLine(5) > 0);
-			break;
+	private void enableAlarm() {
+		PendingIntent sender = null;
+		Intent intent = null;
+		Calendar alarmTime = prepareAlarmTime();
+
+		intent = StartScreenActivity.intents[alarmNumber] = new Intent(this,
+				TimeReceiver.class);
+		intent.putExtra("position", getSelectedSoundPosition());
+
+		sender = PendingIntent.getBroadcast(this, alarmNumber, intent,
+				PendingIntent.FLAG_ONE_SHOT);
+
+		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+		am.set(AlarmManager.RTC_WAKEUP, alarmTime.getTimeInMillis(), sender);
+	}
+
+	private void disableAlarm() {
+		Intent intent = StartScreenActivity.intents[alarmNumber];
+
+		if (intent != null) {
+			PendingIntent sender = PendingIntent.getBroadcast(this,
+					alarmNumber, intent, PendingIntent.FLAG_ONE_SHOT);
+			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+			am.cancel(sender);
 		}
-		return validated;
 	}
 
-	private boolean isTimeFormat(final String format) {
-		return format.matches("\\d{2}:\\d{2}");
-	}
+	private Calendar prepareAlarmTime() {
+		Calendar actualTime = Calendar.getInstance();
+		Calendar timeToTriggerAlarm = Calendar.getInstance();
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-		saveApplicationState();
-	}
+		timeToTriggerAlarm.set(Calendar.HOUR_OF_DAY, getHour());
+		timeToTriggerAlarm.set(Calendar.MINUTE, getMinute());
+		timeToTriggerAlarm.set(Calendar.SECOND, 00);
 
-	/**
-	 * A helper method that get the selected position of a Spinner
-	 * 
-	 * @param line
-	 *            of the Spinner that you want to get the selected position
-	 * @return int of the selected position
-	 */
-	private int getSpinnerSelectedPositionByLine(final int line) {
-		int position = 0;
-		switch (line) {
-		case 1:
-			position = ((Spinner) findViewById(R.id.spinner1))
-					.getSelectedItemPosition();
-			break;
-
-		case 2:
-			position = ((Spinner) findViewById(R.id.spinner2))
-					.getSelectedItemPosition();
-			break;
-		case 3:
-			position = ((Spinner) findViewById(R.id.spinner3))
-					.getSelectedItemPosition();
-			break;
-		case 4:
-			position = ((Spinner) findViewById(R.id.spinner4))
-					.getSelectedItemPosition();
-			break;
-		case 5:
-			position = ((Spinner) findViewById(R.id.spinner5))
-					.getSelectedItemPosition();
-			break;
+		if (actualTime.after(timeToTriggerAlarm)) {
+			timeToTriggerAlarm.add(Calendar.DAY_OF_MONTH, 1);
 		}
-		return position;
+
+		return timeToTriggerAlarm;
 	}
 
-	/**
-	 * A helper method that get the alarm hour of a EditText
-	 * 
-	 * @param line
-	 *            of the EditText that you want to get the text
-	 * @return String which contains the text
-	 */
-	private String getAlarmHourByLine(final int line) {
-		String alarmHour = "";
-
-		switch (line) {
-		case 1:
-			alarmHour = ((EditText) findViewById(R.id.text1)).getText()
-					.toString();
-			break;
-
-		case 2:
-			alarmHour = ((EditText) findViewById(R.id.text2)).getText()
-					.toString();
-			break;
-		case 3:
-			alarmHour = ((EditText) findViewById(R.id.text3)).getText()
-					.toString();
-			break;
-		case 4:
-			alarmHour = ((EditText) findViewById(R.id.text4)).getText()
-					.toString();
-			break;
-		case 5:
-			alarmHour = ((EditText) findViewById(R.id.text5)).getText()
-					.toString();
-			break;
-		}
-		return alarmHour;
+	private int getHour() {
+		TimePicker alarmTime = ((TimePicker) findViewById(R.id.timepicker));
+		return alarmTime.getCurrentHour();
 	}
 
-	private int getHour(final String time) {
-		return Integer.parseInt(time.substring(0, 2));
+	private int getMinute() {
+		TimePicker alarmTime = ((TimePicker) findViewById(R.id.timepicker));
+		return alarmTime.getCurrentMinute();
 	}
 
-	private int getMinute(final String time) {
-		return Integer.parseInt(time.substring(3));
+	public SharedPreferences getLocalSharedPreferences() {
+		return getSharedPreferences(StartScreenActivity.PREFS_NAME,
+				MODE_PRIVATE);
 	}
+
+	private int getSelectedSoundPosition() {
+		return getSpinner().getSelectedItemPosition();
+	}
+
+	private boolean isActivated() {
+		return getCheckBox().isChecked();
+	}
+
+	private CheckBox getCheckBox() {
+		return ((CheckBox) findViewById(R.id.check));
+	}
+
+	private Spinner getSpinner() {
+		return ((Spinner) findViewById(R.id.spinner1));
+	}
+
 }
