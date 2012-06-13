@@ -12,6 +12,7 @@ The preferences are saved on a SharedPreferences object.
 ![Validation](https://github.com/brunomeira/AndroidAlarmExample/raw/master/img/img8.jpg)
 ![Preparing Alarm](https://github.com/brunomeira/AndroidAlarmExample/raw/master/img/img9.jpg)
 ![Wake up](https://github.com/brunomeira/AndroidAlarmExample/raw/master/img/img10.jpg)
+![Wake up](https://github.com/brunomeira/AndroidAlarmExample/raw/master/img/img11.jpg)
 
 Also, Check my web site - www.developingsoftwares.com (It in development, but a lot of features were already implemented).
 
